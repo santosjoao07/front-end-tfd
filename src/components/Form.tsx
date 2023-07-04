@@ -1,440 +1,558 @@
 "use client";
 
 import styles from "./Form.module.css";
+import React, { useState } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm, useFieldArray } from "react-hook-form";
 import { z } from "zod";
 
-const schema = z.object({
-  name: z.string().min(3, "Por favor, informe um nome válido"),
-  numberOfProcess: z.number().min(2, "Por favor, informe um número válido"),
-  typeOfScheduling: z.string().min(3, "Por favor, informe um tipo válido"),
-  sex: z.string().min(3, "Por favor, informe o sexo corretamente"),
-  bornDate: z.date(),
-  age: z.number().min(2, "Por favor, informe uma idade válida"),
-  numberOfService: z.number().min(2, "Por favor, informe um número válido"),
-  numberOfSUS: z.number().min(2, "Por favor, informe um número válido"),
-  address: z.string().min(3, "Por favor, informe um endereço válido"),
-  dateOfService: z.date(),
-  referencePoint: z.string().min(3, "Por favor, informe um ponto de referência válido"),
-  phone: z.string().min(9, "Por favor, informe um telefone válido"),
-  dateOfTrip: z.date(),
-  dateOfScheduling: z.date(),
-  forecastReturn: z.number().min(2, "Por favor, informe um número válido"),
-  predictedDays: z.string().min(1, "Por favor, informe um dia válido"),
-  typeOfService: z.string().min(5, "Por favor, informe um tipo válido"),
-  specialty: z.string().min(5, "Por favor, informe uma especialidade válida"),
-  user: z.string().min(5, "Por favor, informe um usuário válido"),
-  doctorId: z.number().min(2, "Por favor, informe uma identificação válida"),
-  healthFacility: z.string().min(5, "Por favor, informe um estabelecimento válido"),
-  placeOfOrigin: z.string().min(5, "Por favor, informe um local válido"),
-  destinationCity: z.string().min(5, "Por favor, informe um local válido"),
-  escortId: z.number().min(2, "Por favor, informe uma identificação válida"),
-  escortId2: z.number().min(2, "Por favor, informe uma identificação válida"),
-  typeOfDisplacement: z.string().min(5, "Por favor, informe um tipo válido"),
-  transportCompany: z.string().min(5, "Por favor, informe uma empresa válida"),
-  totalOfTickets: z.number().min(1, "Por favor, informe um número válido"),
-  pathID: z.number().min(2, "Por favor, informe uma identificação válida"),
-  dateOfRegister: z.date(),
-  timeOfRegister: z.string().min(4, "Por favor, informe uma hora válida"),
-  serviceObservation: z.string().min(5, "Por favor, informe uma observação válida")
-});
-
-type FormDataProps = z.infer<typeof schema>;
+interface FormData {
+  name: string;
+  numberOfProcess: number;
+  typeOfScheduling: string;
+  sex: string;
+  bornDate: string;
+  age: number;
+  numberOfService: number;
+  numberOfSUS: number;
+  address: string;
+  isMinor: string;
+  dateOfService: string;
+  referencePoint: string;
+  phone: string;
+  dateOfTrip: string;
+  dateOfScheduling: string;
+  forecastReturn: number;
+  predictedDays: string;
+  typeOfService: string;
+  specialty: string;
+  user: string;
+  doctorId: number;
+  healthFacility: string;
+  placeOfOrigin: string;
+  destinationCity: string;
+  hasACompanion: string;
+  escortId: number;
+  escortId2: number;
+  typeOfDisplacement: string;
+  transportCompany: string;
+  totalOfTickets: number;
+  pathID: number;
+  dateOfRegister: string;
+  timeOfRegister: string;
+  serviceObservation: string;
+}
 
 export default function Form() {
-  const {
-    handleSubmit,
-    register,
-    control,
-    formState: { errors },
-  } = useForm<FormDataProps>({
-    mode: "all",
-    criteriaMode: "all",
-    resolver: zodResolver(schema),
+  const [formData, setFormData] = useState<FormData>({
+    name: "",
+    numberOfProcess: 0,
+    typeOfScheduling: "",
+    sex: "",
+    bornDate: "",
+    age: 0,
+    numberOfService: 0,
+    numberOfSUS: 0,
+    address: "",
+    isMinor: "",
+    dateOfService: "",
+    referencePoint: "",
+    phone: "",
+    dateOfTrip: "",
+    dateOfScheduling: "",
+    forecastReturn: 0,
+    predictedDays: "",
+    typeOfService: "",
+    specialty: "",
+    user: "",
+    doctorId: 0,
+    healthFacility: "",
+    placeOfOrigin: "",
+    destinationCity: "",
+    hasACompanion: "",
+    escortId: 0,
+    escortId2: 0,
+    typeOfDisplacement: "",
+    transportCompany: "",
+    totalOfTickets: 0,
+    pathID: 0,
+    dateOfRegister: "",
+    timeOfRegister: "",
+    serviceObservation: "",
   });
 
-  console.log(errors);
+  const handleChange = (
+    event: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
+  ) => {
+    const { name, value } = event.target;
+    setFormData((prevState) => ({
+      ...prevState,
+      [name]: value,
+    }));
+  };
 
-  const handleSubmitForm = (data: FormDataProps) => {
-    console.log(data);
+  const handleSubmit = (event: React.FormEvent) => {
+    event.preventDefault();
+    console.log(formData);
   };
 
   return (
     <div className={styles.container}>
-      <form
-        id="my-form"
-        className={styles.form}
-        onSubmit={handleSubmit(handleSubmitForm)}
-      >
+      <form id="my-form" className={styles.form} onSubmit={handleSubmit}>
         <div>
-          <input
-            className={styles.input}
-            {...register("name")}
-            type="text"
-            placeholder="Informe seu nome"
-          />
-          {errors.name && <p>{errors.name.message}</p>}
+          <label>
+            Nome:
+            <input
+              className={styles.input}
+              type="text"
+              name="name"
+              value={formData.name}
+              onChange={handleChange}
+            />
+          </label>
         </div>
 
         <div>
-          <input
-            className={styles.input}
-            {...register("numberOfProcess")}
-            type="text"
-            placeholder="Informe o número do processo"
-          />
-          {errors.numberOfProcess && <p>{errors.numberOfProcess.message}</p>}
+          <label>
+            Número do processo:
+            <input
+              className={styles.input}
+              type="number"
+              name="numberOfProcess"
+              value={formData.numberOfProcess}
+              onChange={handleChange}
+            />
+          </label>
         </div>
 
         <div>
-          <input
-            className={styles.input}
-            {...register("typeOfScheduling")}
-            type="text"
-            placeholder="Informe o tipo de agendamento"
-          />
-          {errors.typeOfScheduling && <p>{errors.typeOfScheduling.message}</p>}
+          <label>
+            Tipo de atendimento:
+            <input
+              className={styles.input}
+              type="text"
+              name="typeOfScheduling"
+              value={formData.typeOfScheduling}
+              onChange={handleChange}
+            />
+          </label>
         </div>
 
         <div>
-          <input
-            className={styles.input}
-            {...register("sex")}
-            type="text"
-            placeholder="Informe o seu sexo"
-          />
-          {errors.sex && <p>{errors.sex.message}</p>}
+          <label>
+            Sexo:
+            <input
+              className={styles.input}
+              type="text"
+              name="sex"
+              value={formData.sex}
+              onChange={handleChange}
+            />
+          </label>
         </div>
 
-        <div className={styles.label}>
+        <div>
+          <label>
+            Data de nascimento:
+            <input
+              className={styles.input}
+              type="text"
+              name="bornDate"
+              value={formData.bornDate}
+              onChange={handleChange}
+            />
+          </label>
+        </div>
+
+        <div>
+          <label>
+            Idade:
+            <input
+              className={styles.input}
+              type="number"
+              name="age"
+              value={formData.age}
+              onChange={handleChange}
+            />
+          </label>
+        </div>
+
+        <div>
+          <label>
+            Número de atendimento:
+            <input
+              className={styles.input}
+              type="number"
+              name="numberOfService"
+              value={formData.numberOfService}
+              onChange={handleChange}
+            />
+          </label>
+        </div>
+
+        <div>
+          <label>
+            Número do cartão do SUS:
+            <input
+              className={styles.input}
+              type="number"
+              name="numberOfSUS"
+              value={formData.numberOfSUS}
+              onChange={handleChange}
+            />
+          </label>
+        </div>
+
+        <div>
+          <label>
+            Endereço:
+            <input
+              className={styles.input}
+              type="text"
+              name="address"
+              value={formData.address}
+              onChange={handleChange}
+            />
+          </label>
+        </div>
+
+        <div>
+          <label>Menor de idade:</label>
           <div>
-            <label>Informe a sua data de nascimento</label>
-          </div>
-          <input
-            className={styles.input}
-            {...register("bornDate")}
-            type="date"
-            placeholder="Informe a sua data de nascimento"
-          />
-          {errors.bornDate && <p>{errors.bornDate.message}</p>}
-        </div>
-
-        <div>
-          <input
-            className={styles.input}
-            {...register("age")}
-            type="number"
-            placeholder="Informe a sua idade"
-          />
-          {errors.age && <p>{errors.age.message}</p>}
-        </div>
-
-        <div>
-          <input
-            className={styles.input}
-            {...register("numberOfService")}
-            type="number"
-            placeholder="Informe o seu número de atendimento"
-          />
-          {errors.numberOfService && <p>{errors.numberOfService.message}</p>}
-        </div>
-
-        <div>
-          <input
-            className={styles.input}
-            {...register("numberOfSUS")}
-            type="number"
-            placeholder="Informe o seu número de cartão do SUS"
-          />
-          {errors.numberOfSUS && <p>{errors.numberOfSUS.message}</p>}
-        </div>
-
-        <div>
-          <input
-            className={styles.input}
-            {...register("address")}
-            type="text"
-            placeholder="Informe o seu endereço"
-          />
-          {errors.address && <p>{errors.address.message}</p>}
-        </div>
-
-        <div className={styles.label}>
-          <div>
-            <label>Menor de idade ?</label>
-          </div>
-          <div>
-            <input type="radio" id="sim" name="menor-idade" value="sim" />
-            <label>Sim</label>
-            <br></br>
-            <input type="radio" id="sim" name="menor-idade" value="não" />
-            <label>Não</label>
-            <br></br>
-          </div>
-        </div>
-
-        <div className={styles.label}>
-          <div>
-            <label>Informe a sua data de atendimento</label>
-          </div>
-          <input
-            className={styles.input}
-            {...register("dateOfService")}
-            type="date"
-            placeholder="Informe a sua data de nascimento"
-          />
-          {errors.dateOfService && <p>{errors.dateOfService.message}</p>}
-        </div>
-
-        <div>
-          <input
-            className={styles.input}
-            {...register("referencePoint")}
-            type="text"
-            placeholder="Informe o ponto de referência"
-          />
-          {errors.referencePoint && <p>{errors.referencePoint.message}</p>}
-        </div>
-
-        <div>
-          <input
-            className={styles.input}
-            {...register("phone")}
-            type="text"
-            placeholder="Informe o telefone"
-          />
-          {errors.phone && <p>{errors.phone.message}</p>}
-        </div>
-
-        <div className={styles.label}>
-          <div>
-            <label>Data da viagem</label>
-          </div>
-          <input
-            className={styles.input}
-            {...register("dateOfTrip")}
-            type="date"
-            placeholder="Informe a sua data de viagem"
-          />
-          {errors.dateOfTrip && <p>{errors.dateOfTrip.message}</p>}
-        </div>
-
-        <div className={styles.label}>
-          <div>
-            <label>Data do agendamento</label>
-          </div>
-          <input
-            className={styles.input}
-            {...register("dateOfScheduling")}
-            type="date"
-            placeholder="Informe a sua data de agendamento"
-          />
-          {errors.dateOfScheduling && <p>{errors.dateOfScheduling.message}</p>}
-        </div>
-
-        <div>
-          <input
-            className={styles.input}
-            {...register("forecastReturn")}
-            type="number"
-            placeholder="Previsão de retorno"
-          />
-          {errors.forecastReturn && <p>{errors.forecastReturn.message}</p>}
-        </div>
-
-        <div>
-          <input
-            className={styles.input}
-            {...register("predictedDays")}
-            type="text"
-            placeholder="Dias previstos"
-          />
-          {errors.predictedDays && <p>{errors.predictedDays.message}</p>}
-        </div>
-
-        <div>
-          <input
-            className={styles.input}
-            {...register("typeOfService")}
-            type="text"
-            placeholder="Tipo de atendimento"
-          />
-          {errors.typeOfService && <p>{errors.typeOfService.message}</p>}
-        </div>
-
-        <div>
-          <input
-            className={styles.input}
-            {...register("specialty")}
-            type="text"
-            placeholder="Especialidade"
-          />
-          {errors.specialty && <p>{errors.specialty.message}</p>}
-        </div>
-
-        <div>
-          <input
-            className={styles.input}
-            {...register("user")}
-            type="text"
-            placeholder="Usuário"
-          />
-          {errors.user && <p>{errors.user.message}</p>}
-        </div>
-
-        <div>
-          <input
-            className={styles.input}
-            {...register("doctorId")}
-            type="number"
-            placeholder="Identificação do médico"
-          />
-          {errors.doctorId && <p>{errors.doctorId.message}</p>}
-        </div>
-
-        <div>
-          <input
-            className={styles.input}
-            {...register("healthFacility")}
-            type="text"
-            placeholder="Estabelecimento de saúde"
-          />
-          {errors.healthFacility && <p>{errors.healthFacility.message}</p>}
-        </div>
-
-        <div>
-          <input
-            className={styles.input}
-            {...register("placeOfOrigin")}
-            type="text"
-            placeholder="Estabelecimento de saúde"
-          />
-          {errors.placeOfOrigin && <p>{errors.placeOfOrigin.message}</p>}
-        </div>
-
-        <div>
-          <input
-            className={styles.input}
-            {...register("destinationCity")}
-            type="text"
-            placeholder="Cidade de destino"
-          />
-          {errors.destinationCity && <p>{errors.destinationCity.message}</p>}
-        </div>
-
-        <div className={styles.label}>
-          <div>
-            <label>Possui acompanhante?</label>
-          </div>
-          <div>
-            <input type="radio" id="sim" name="menor-idade" value="sim" />
-            <label>Sim</label>
-            <br></br>
-            <input type="radio" id="sim" name="menor-idade" value="não" />
-            <label>Não</label>
-            <br></br>
+            <label>
+              <input
+                type="radio"
+                name="isMinor"
+                value="yes"
+                checked={formData.isMinor === "yes"}
+                onChange={handleChange}
+              />
+              Sim
+            </label>
+            <label>
+              <input
+                type="radio"
+                name="isMinor"
+                value="no"
+                checked={formData.isMinor === "no"}
+                onChange={handleChange}
+              />
+              Não
+            </label>
           </div>
         </div>
 
         <div>
-          <input
-            className={styles.input}
-            {...register("escortId")}
-            type="number"
-            placeholder="Identificação do acompanhante 1"
-          />
-          {errors.escortId && <p>{errors.escortId.message}</p>}
+          <label>
+            Data de atendimento:
+            <input
+              className={styles.input}
+              type="text"
+              name="dateOfService"
+              value={formData.dateOfService}
+              onChange={handleChange}
+            />
+          </label>
         </div>
 
         <div>
-          <input
-            className={styles.input}
-            {...register("escortId2")}
-            type="number"
-            placeholder="Identificação do acompanhante 2"
-          />
-          {errors.escortId2 && <p>{errors.escortId2.message}</p>}
+          <label>
+            Ponto de referência:
+            <input
+              className={styles.input}
+              type="text"
+              name="referencePoint"
+              value={formData.referencePoint}
+              onChange={handleChange}
+            />
+          </label>
         </div>
 
         <div>
-          <input
-            className={styles.input}
-            {...register("typeOfDisplacement")}
-            type="text"
-            placeholder="Tipo de deslocamento"
-          />
-          {errors.typeOfDisplacement && <p>{errors.typeOfDisplacement.message}</p>}
+          <label>
+            Telefone:
+            <input
+              className={styles.input}
+              type="text"
+              name="phone"
+              value={formData.phone}
+              onChange={handleChange}
+            />
+          </label>
         </div>
 
         <div>
-          <input
-            className={styles.input}
-            {...register("transportCompany")}
-            type="text"
-            placeholder="Empresa de tranporte"
-          />
-          {errors.transportCompany && <p>{errors.transportCompany.message}</p>}
+          <label>
+            Data da viagem:
+            <input
+              className={styles.input}
+              type="text"
+              name="dateOfTrip"
+              value={formData.dateOfTrip}
+              onChange={handleChange}
+            />
+          </label>
         </div>
 
         <div>
-          <input
-            className={styles.input}
-            {...register("totalOfTickets")}
-            type="number"
-            placeholder="Total de passagens"
-          />
-          {errors.totalOfTickets && <p>{errors.totalOfTickets.message}</p>}
+          <label>
+            Data do agendamento:
+            <input
+              className={styles.input}
+              type="text"
+              name="dateOfScheduling"
+              value={formData.dateOfScheduling}
+              onChange={handleChange}
+            />
+          </label>
         </div>
 
         <div>
-          <input
-            className={styles.input}
-            {...register("pathID")}
-            type="number"
-            placeholder="Identificação do trajeto"
-          />
-          {errors.pathID && <p>{errors.pathID.message}</p>}
+          <label>
+            Previsão de retorno:
+            <input
+              className={styles.input}
+              type="text"
+              name="forecastReturn"
+              value={formData.forecastReturn}
+              onChange={handleChange}
+            />
+          </label>
         </div>
 
-        <div className={styles.label}>
+        <div>
+          <label>
+            Dias previstos:
+            <input
+              className={styles.input}
+              type="text"
+              name="predictedDays"
+              value={formData.predictedDays}
+              onChange={handleChange}
+            />
+          </label>
+        </div>
+
+        <div>
+          <label>
+            Tipo de atendimento:
+            <input
+              className={styles.input}
+              type="text"
+              name="typeOfService"
+              value={formData.typeOfService}
+              onChange={handleChange}
+            />
+          </label>
+        </div>
+
+        <div>
+          <label>
+            Especialidade:
+            <input
+              className={styles.input}
+              type="text"
+              name="specialty"
+              value={formData.specialty}
+              onChange={handleChange}
+            />
+          </label>
+        </div>
+
+        <div>
+          <label>
+            Usuário:
+            <input
+              className={styles.input}
+              type="text"
+              name="user"
+              value={formData.user}
+              onChange={handleChange}
+            />
+          </label>
+        </div>
+
+        <div>
+          <label>
+            Identificação do médico:
+            <input
+              className={styles.input}
+              type="text"
+              name="doctorId"
+              value={formData.doctorId}
+              onChange={handleChange}
+            />
+          </label>
+        </div>
+
+        <div>
+          <label>
+            Estabelecimento de saúde:
+            <input
+              className={styles.input}
+              type="text"
+              name="healthFacility"
+              value={formData.healthFacility}
+              onChange={handleChange}
+            />
+          </label>
+        </div>
+
+        <div>
+          <label>
+            Cidade de destino:
+            <input
+              className={styles.input}
+              type="text"
+              name="destinationCit"
+              value={formData.destinationCity}
+              onChange={handleChange}
+            />
+          </label>
+        </div>
+
+        <div>
+          <label>Possui acompanhante:</label>
           <div>
-            <label>Data do cadastro</label>
+            <label>
+              <input
+                type="radio"
+                name="hasACompanion"
+                value="yes"
+                checked={formData.isMinor === "yes"}
+                onChange={handleChange}
+              />
+              Sim
+            </label>
+            <label>
+              <input
+                type="radio"
+                name="hasACompanion"
+                value="no"
+                checked={formData.isMinor === "no"}
+                onChange={handleChange}
+              />
+              Não
+            </label>
           </div>
-          <input
-            className={styles.input}
-            {...register("dateOfRegister")}
-            type="date"
-            placeholder="Data do cadastro"
-          />
-          {errors.dateOfRegister && <p>{errors.dateOfRegister.message}</p>}
         </div>
 
         <div>
-          <input
-            className={styles.input}
-            {...register("timeOfRegister")}
-            type="number"
-            placeholder="Hora do cadastro"
-          />
-          {errors.timeOfRegister && <p>{errors.timeOfRegister.message}</p>}
+          <label>
+            Identificação do acompanhante 1
+            <input
+              className={styles.input}
+              type="number"
+              name="escortId"
+              value={formData.escortId}
+              onChange={handleChange}
+            />
+          </label>
         </div>
 
         <div>
-          <input
-            className={styles.input}
-            {...register("serviceObservation")}
-            type="number"
-            placeholder="Observação do atendimento"
-          />
-          {errors.serviceObservation && <p>{errors.serviceObservation.message}</p>}
+          <label>
+            Identificação do acompanhante 2
+            <input
+              className={styles.input}
+              type="number"
+              name="escortId2"
+              value={formData.escortId2}
+              onChange={handleChange}
+            />
+          </label>
         </div>
 
-        {/* 
-            DADOS DO AGENDAMENTO
+        <div>
+          <label>
+            Tipo de deslocamento
+            <input
+              className={styles.input}
+              type="text"
+              name="typeOfDisplacement"
+              value={formData.typeOfDisplacement}
+              onChange={handleChange}
+            />
+          </label>
+        </div>
+
+        <div>
+          <label>
+            Empresa de tranporte
+            <input
+              className={styles.input}
+              type="text"
+              name="transportCompany"
+              value={formData.transportCompany}
+              onChange={handleChange}
+            />
+          </label>
+        </div>
+
+        <div>
+          <label>
+            Total de passagens
+            <input
+              className={styles.input}
+              type="text"
+              name="totalOfTickets"
+              value={formData.totalOfTickets}
+              onChange={handleChange}
+            />
+          </label>
+        </div>
+
+        <div>
+          <label>
+            Identificação do trajeto
+            <input
+              className={styles.input}
+              type="number"
+              name="pathID"
+              value={formData.pathID}
+              onChange={handleChange}
+            />
+          </label>
+        </div>
+
+        <div>
+          <label>
+            Data do cadastro
+            <input
+              className={styles.input}
+              type="text"
+              name="dateOfRegister"
+              value={formData.dateOfRegister}
+              onChange={handleChange}
+            />
+          </label>
+        </div>
+
+        <div>
+          <label>
+            Hora do cadastro
+            <input
+              className={styles.input}
+              type="text"
+              name="timeOfRegister"
+              value={formData.timeOfRegister}
+              onChange={handleChange}
+            />
+          </label>
+        </div>
+
+        <div>
+          <label>
             Observação do atendimento
-
-        */}
+            <input
+              className={styles.input}
+              type="text"
+              name="serviceObservation"
+              value={formData.serviceObservation}
+              onChange={handleChange}
+            />
+          </label>
+        </div>
       </form>
 
       <div className="wrap">
